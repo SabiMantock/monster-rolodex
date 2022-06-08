@@ -3,20 +3,15 @@ import { useEffect, useState } from 'react'
 import CardList from './components/card-list/card-list.component'
 import './App.css'
 import SearchBox from './components/search-box/search-box.component'
+import { fetchUserData } from './utils/getUserData'
 
 const App = () => {
   const [searchField, setSearchField] = useState('')
   const [monsters, setMonsters] = useState([])
   const [filteredMonsters, setFilteredMonsters] = useState(monsters)
 
-  const fetchUserData = async () => {
-    const response = await fetch('https://jsonplaceholder.typicode.com/users')
-    const data = await response.json()
-    setMonsters(data)
-  }
-
   useEffect(() => {
-    fetchUserData()
+    fetchUserData(setMonsters)
   }, [])
 
   useEffect(() => {
