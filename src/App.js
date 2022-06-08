@@ -1,25 +1,54 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from 'react'
 
-function App() {
+import CardList from './components/card-list/card-list.component'
+import './App.css'
+import SearchBox from './components/search-box/search-box.component'
+
+const App = () => {
+  const [searchField, setSearchField] = useState('')
+  const [monsters, setMonsters] = useState([])
+  const [filteredMonsters, setFilteredMonsters] = useState(monsters)
+
+  const fetchUserData = async () => {
+    const response = await fetch('https://jsonplaceholder.typicode.com/users')
+    const data = await response.json()
+    setMonsters(data)
+  }
+
+  useEffect(() => {
+    fetchUserData()
+  }, [])
+
+  useEffect(() => {
+    const newFiltered = monsters.filter(monster => {
+      const name = monster.name.toLowerCase()
+      return name.includes(searchField)
+    })
+
+    setFilteredMonsters(newFiltered)
+  }, [monsters, searchField])
+
+  const onSearchChange = e => {
+    setSearchField(e.target.value.toLowerCase())
+  }
+
+  // const filteredMonster = monsters.filter(monster => {
+  //   const name = monster.name.toLowerCase()
+  //   return name.includes(searchField)
+  // })
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <h1 className='app-title'>Monsters Rolodex</h1>
+
+      <SearchBox
+        onChangeHandler={onSearchChange}
+        placeholder='search monsters'
+        className='monsters-search-box'
+      />
+      <CardList monsters={filteredMonsters} />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
